@@ -1,6 +1,8 @@
 package tictactoe;
 
-public class Human extends Player{
+import java.util.Scanner;
+
+public class Human implements Player{
 
     public int[] getNextMove(Board board) {
         boolean hasGoodInput = false;
@@ -9,12 +11,13 @@ public class Human extends Player{
 
         while (!hasGoodInput) {
             System.out.print("Enter the coordinates: ");
+            Scanner scanner = new Scanner(System.in);
             input = scanner.nextLine();
 
             try {
-                String[] splitedInpt = input.split(" ", 2);
-                position[0] = Integer.parseInt(splitedInpt[0]);
-                position[1] = Integer.parseInt(splitedInpt[1]);
+                String[] splitInput = input.split(" ", 2);
+                position[0] = Integer.parseInt(splitInput[0]);
+                position[1] = Integer.parseInt(splitInput[1]);
             } catch (Exception e) {
                 System.out.println("\nYou should enter numbers!");
                 continue;
@@ -25,7 +28,10 @@ public class Human extends Player{
                 continue;
             }
 
-            if (board[position[0] - 1][position[1] - 1] != '_') {
+            position[0] = position[0] - 1;
+            position[1] = position[1] - 1;
+
+            if (!board.isPositionEmpty(position)) {
                 System.out.println("\nThis cell is occupied! Choose another one!");
                 continue;
             }

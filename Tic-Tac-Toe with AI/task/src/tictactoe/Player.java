@@ -1,6 +1,6 @@
 package tictactoe;
 
-public abstract class Player {
+public interface Player {
 
-    public abstract int[] getNextMove(Board board);
+    public int[] getNextMove(Board board);
 }

@@ -23,7 +23,7 @@ public class Board {
 
         //Check rows
         for (int i = 0; i < 3; i++) {
-            if (board[i][0].equals(board[i][1]) && board[i][0].equals(board[i][2])&& !board[i][0].isEmpty()) {
+            if (board[i][0].equals(board[i][1]) && board[i][0].equals(board[i][2]) && !board[i][0].isEmpty()) {
                 winner = board[i][0].getValue();
             }
         }
@@ -36,8 +36,8 @@ public class Board {
         }
 
         //Check diagonals
-        if ((board[0][0].equals(board[1][1]) && board[2][2].equals(board[0][0]) ||
-                board[0][2].equals(board[1][1]) && board[2][0].equals(board[1][1]) && !board[1][1].isEmpty())) {
+        if (((board[0][0].equals(board[1][1]) && board[2][2].equals(board[0][0])) ||
+                (board[0][2].equals(board[1][1]) && board[2][0].equals(board[1][1]))) && !board[1][1].isEmpty()) {
             winner = board[1][1].getValue();
         }
 
@@ -59,10 +59,10 @@ public class Board {
     public String drawBoard() {
         StringBuilder ret = new StringBuilder();
 
-        ret.append("---------");
+        ret.append("---------" + "\n");
 
         for (Field[] row : board) {
-            System.out.print("| ");
+            ret.append("| ");
             for (Field field : row) {
                 if (field.isEmpty()) {
                     ret.append("  ");
@@ -70,11 +70,23 @@ public class Board {
                     ret.append(field.getValue()).append(" ");
                 }
             }
-            System.out.println("|");
+            ret.append("|" + "\n");
         }
 
-        ret.append("---------");
+        ret.append("---------" + "\n");
 
         return ret.toString();
+    }
+
+    public boolean isPositionEmpty(int[] position) {
+        return board[position[0]][position[1]].isEmpty();
+    }
+
+    public void makeMove(int[] position, String move) {
+        board[position[0]][position[1]].setValue(move);
+    }
+
+    public boolean isPosition(String value, int[] position) {
+        return board[position[0]][position[1]].getValue().equals(value);
     }
 }

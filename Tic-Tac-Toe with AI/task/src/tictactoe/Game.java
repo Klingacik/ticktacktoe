@@ -1,13 +1,15 @@
 package tictactoe;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Game {
-    private Board board;
+    private final Board board;
     private final Scanner scanner;
 
     public Game() {
         scanner = new Scanner(System.in);
+        board = new Board(3);
 
         start();
     }
@@ -35,12 +37,31 @@ public class Game {
                             startGame(new Human(), new EasyComputer());
                             break;
 
+                        case 13:
+                            startGame(new Human(), new MediumComputer(false));
+
                         case 21:
                             startGame(new EasyComputer(), new Human());
                             break;
 
                         case 22:
                             startGame(new EasyComputer(), new EasyComputer());
+                            break;
+
+                        case 23:
+                            startGame(new EasyComputer(), new MediumComputer(false));
+                            break;
+
+                        case 31:
+                            startGame(new MediumComputer(true), new Human());
+                            break;
+
+                        case 32:
+                            startGame(new MediumComputer(true), new EasyComputer());
+                            break;
+
+                        case 33:
+                            startGame(new MediumComputer(true), new MediumComputer(false));
                             break;
 
                         case -1:
@@ -50,8 +71,6 @@ public class Game {
                     }
                 }
             }
-
-
         }
     }
 
@@ -83,6 +102,10 @@ public class Game {
                 ret = 20;
                 break;
 
+            case "medium":
+                ret = 30;
+                break;
+
             default:
                 return -1;
         }
@@ -96,6 +119,10 @@ public class Game {
                 ret += 2;
                 break;
 
+            case "medium":
+                ret += 3;
+                break;
+
             default:
                 return -1;
         }
@@ -104,7 +131,26 @@ public class Game {
     }
 
     private void startGame(Player playerOne, Player playerTwo) {
+        board.clear();
+        boolean firstPlayerMove = true;
+        String winner = "N";
 
+        while (winner.equals("N")) {
+            System.out.println(board.drawBoard());
+
+            if(firstPlayerMove) {
+                board.makeMove(playerOne.getNextMove(board), "X");
+            } else {
+                board.makeMove(playerTwo.getNextMove(board), "O");
+            }
+
+            firstPlayerMove = !firstPlayerMove;
+
+            winner = board.determinateBoardState();
+        }
+
+        System.out.println(board.drawBoard());
+        System.out.println(Objects.equals(winner, "D") ? "Draw" : winner + " wins");
     }
 }
 
