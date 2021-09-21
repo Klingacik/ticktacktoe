@@ -78,7 +78,7 @@ public class Board {
         return ret.toString();
     }
 
-    public boolean isPositionEmpty(int[] position) {
+    public boolean isPositionEmpty(int... position) {
         return board[position[0]][position[1]].isEmpty();
     }
 
@@ -86,7 +86,7 @@ public class Board {
         board[position[0]][position[1]].setValue(move);
     }
 
-    public boolean isPosition(String value, int[] position) {
-        return board[position[0]][position[1]].getValue().equals(value);
+    public boolean compareTwoPositions(String value, int... positions) {
+        return board[positions[0]][positions[1]].getValue().equals(value) && board[positions[2]][positions[3]].getValue().equals(value);
     }
 }

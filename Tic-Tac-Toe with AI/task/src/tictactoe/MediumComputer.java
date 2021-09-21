@@ -1,74 +1,38 @@
 package tictactoe;
 
-import java.util.Random;
-
-public class MediumComputer implements Player{
-    private Board board;
-    private final boolean playingAsX;
-
+public class MediumComputer extends Computer{
     public MediumComputer(boolean playingAsX) {
-        this.playingAsX = playingAsX;
+        super(playingAsX);
     }
 
     public int[] getNextMove(Board board) {
-        this.board = board;
+        super.board = board;
         int[] ret = new int[2];
 
         System.out.println("Making move level \"medium\"");
 
-        if (hasNextWinningMove(ret)) {
+        if (hasNextGoodMove(ret, playingAsX ? "X" : "O")) {
             return ret;
-        } else if (hasNextBlockingMove(ret)) {
+        } else if (hasNextGoodMove(ret, !playingAsX ? "X" : "O")) {
             return ret;
         }
 
-        ret = getNextRandomMove();
+        ret = super.getNextRandomMove();
         return ret;
     }
 
-    private int[] getNextRandomMove() {
-        int[] position = new int[2];
-        String[] availablePosition = new String[9];
-        Random random = new Random();
-        int counter = 0;
-
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (board.isPositionEmpty(new int[] {i, j})) {
-                    availablePosition[counter] = i + " " + j;
-                    counter++;
-                }
-            }
-        }
-
-        int randomPosition = random.nextInt(counter);
-
-        String[] randomPositionSplit = availablePosition[randomPosition].split(" ");
-
-        position[0] = Integer.parseInt(randomPositionSplit[0]);
-        position[1] = Integer.parseInt(randomPositionSplit[1]);
-
-        return position;
-    }
-
-    private boolean hasNextWinningMove(int[] position) {
-        String lookingFor = playingAsX ? "X" : "O";
-
+    private boolean hasNextGoodMove(int[] position, String lookingFor) {
         for (int i = 0; i < 3; i++) {
             for (int j = 1; j < 3; j++) {
-                if (board.isPosition(lookingFor, new int[] {i, j}) &&
-                        board.isPosition(lookingFor, new int[] {i, j - 1}) && board.isPositionEmpty(new int[] {i , j + 1 > 2 ? 0 : j + 1})) {
+                if (board.compareTwoPositions(lookingFor, i, j, i, j - 1) &&
+                        board.isPositionEmpty(i, j + 1 > 2 ? 0 : j + 1)) {
                     position[0] = i;
                     position[1] = j == 2 ? 0 : j + 1;
                     return true;
                 }
-            }
-        }
 
-        for (int i = 0; i < 3; i++) {
-            for (int j = 1; j < 3; j++) {
-                if (board.isPosition(lookingFor, new int[] {j, i}) &&
-                        board.isPosition(lookingFor, new int[] {j - 1, i}) && board.isPositionEmpty(new int[] {j + 1 > 2 ? 0 : j + 1, i})) {
+                if (board.compareTwoPositions(lookingFor, j, i, j - 1, i) &&
+                        board.isPositionEmpty(j + 1 > 2 ? 0 : j + 1, i)) {
                     position[1] = i;
                     position[0] = j == 2 ? 0 : j + 1;
                     return true;
@@ -76,101 +40,37 @@ public class MediumComputer implements Player{
             }
         }
 
-        if (board.isPosition(lookingFor, new int[] {0, 0}) && board.isPosition(lookingFor, new int[] {1, 1}) && board.isPositionEmpty(new int[] {2, 2})) {
+        if (board.compareTwoPositions(lookingFor, 0, 0, 1, 1) && board.isPositionEmpty(2, 2)) {
             position[0] = 2;
             position[1] = 2;
             return true;
         }
 
-        if (board.isPosition(lookingFor, new int[] {0, 0}) && board.isPosition(lookingFor, new int[] {2, 2}) && board.isPositionEmpty(new int[] {1, 1})) {
+        if (board.compareTwoPositions(lookingFor, 0, 0, 2, 2) && board.isPositionEmpty(1, 1)) {
             position[0] = 1;
             position[1] = 1;
             return true;
         }
 
-        if (board.isPosition(lookingFor, new int[] {2, 2}) && board.isPosition(lookingFor, new int[] {1, 1}) && board.isPositionEmpty(new int[] {0, 0})) {
+        if (board.compareTwoPositions(lookingFor, 1, 1, 2, 2) && board.isPositionEmpty(0, 0)) {
             position[0] = 0;
             position[1] = 0;
             return true;
         }
 
-        if (board.isPosition(lookingFor, new int[] {0, 2}) && board.isPosition(lookingFor, new int[] {1, 1}) && board.isPositionEmpty(new int[] {2, 0})) {
+        if (board.compareTwoPositions(lookingFor, 1, 1, 0, 2) && board.isPositionEmpty(2, 0)) {
             position[0] = 2;
             position[1] = 0;
             return true;
         }
 
-        if (board.isPosition(lookingFor, new int[] {2, 0}) && board.isPosition(lookingFor, new int[] {1, 1}) && board.isPositionEmpty(new int[] {0, 2})) {
+        if (board.compareTwoPositions(lookingFor, 1, 1, 2, 0) && board.isPositionEmpty(0, 2)) {
             position[0] = 0;
             position[1] = 2;
             return true;
         }
 
-        if (board.isPosition(lookingFor, new int[] {0, 2}) && board.isPosition(lookingFor, new int[] {2, 0}) && board.isPositionEmpty(new int[] {1, 1})) {
-            position[0] = 1;
-            position[1] = 1;
-            return true;
-        }
-
-        return false;
-    }
-
-    private boolean hasNextBlockingMove(int[] position) {
-        String lookingFor = !playingAsX ? "X" : "O";
-
-        for (int i = 0; i < 3; i++) {
-            for (int j = 1; j < 3; j++) {
-                if (board.isPosition(lookingFor, new int[] {i, j}) &&
-                        board.isPosition(lookingFor, new int[] {i, j - 1})  && board.isPositionEmpty(new int[] {i , j + 1 > 2 ? 0 : j + 1})) {
-                    position[0] = i;
-                    position[1] = j == 2 ? 0 : j + 1;
-                    return true;
-                }
-            }
-        }
-
-        for (int i = 0; i < 3; i++) {
-            for (int j = 1; j < 3; j++) {
-                if (board.isPosition(lookingFor, new int[] {j, i}) &&
-                        board.isPosition(lookingFor, new int[] {j - 1, i}) && board.isPositionEmpty(new int[] {j + 1 > 2 ? 0 : j + 1, i})) {
-                    position[1] = i;
-                    position[0] = j == 2 ? 0 : j + 1;
-                    return true;
-                }
-            }
-        }
-
-        if (board.isPosition(lookingFor, new int[] {0, 0}) && board.isPosition(lookingFor, new int[] {1, 1}) && board.isPositionEmpty(new int[] {2, 2})) {
-            position[0] = 2;
-            position[1] = 2;
-            return true;
-        }
-
-        if (board.isPosition(lookingFor, new int[] {0, 0}) && board.isPosition(lookingFor, new int[] {2, 2}) && board.isPositionEmpty(new int[] {1, 1})) {
-            position[0] = 1;
-            position[1] = 1;
-            return true;
-        }
-
-        if (board.isPosition(lookingFor, new int[] {2, 2}) && board.isPosition(lookingFor, new int[] {1, 1}) && board.isPositionEmpty(new int[] {0, 0})) {
-            position[0] = 0;
-            position[1] = 0;
-            return true;
-        }
-
-        if (board.isPosition(lookingFor, new int[] {0, 2}) && board.isPosition(lookingFor, new int[] {1, 1}) && board.isPositionEmpty(new int[] {2, 0})) {
-            position[0] = 2;
-            position[1] = 0;
-            return true;
-        }
-
-        if (board.isPosition(lookingFor, new int[] {2, 0}) && board.isPosition(lookingFor, new int[] {1, 1}) && board.isPositionEmpty(new int[] {0, 2})) {
-            position[0] = 0;
-            position[1] = 2;
-            return true;
-        }
-
-        if (board.isPosition(lookingFor, new int[] {0, 2}) && board.isPosition(lookingFor, new int[] {2, 0}) && board.isPositionEmpty(new int[] {1, 1})) {
+        if (board.compareTwoPositions(lookingFor, 0, 2, 2, 0) && board.isPositionEmpty(1, 1)) {
             position[0] = 1;
             position[1] = 1;
             return true;

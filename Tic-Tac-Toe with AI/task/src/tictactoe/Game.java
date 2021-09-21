@@ -34,22 +34,22 @@ public class Game {
                             break;
 
                         case 12:
-                            startGame(new Human(), new EasyComputer());
+                            startGame(new Human(), new EasyComputer(false));
                             break;
 
                         case 13:
                             startGame(new Human(), new MediumComputer(false));
 
                         case 21:
-                            startGame(new EasyComputer(), new Human());
+                            startGame(new EasyComputer(true), new Human());
                             break;
 
                         case 22:
-                            startGame(new EasyComputer(), new EasyComputer());
+                            startGame(new EasyComputer(true), new EasyComputer(false));
                             break;
 
                         case 23:
-                            startGame(new EasyComputer(), new MediumComputer(false));
+                            startGame(new EasyComputer(true), new MediumComputer(false));
                             break;
 
                         case 31:
@@ -57,7 +57,7 @@ public class Game {
                             break;
 
                         case 32:
-                            startGame(new MediumComputer(true), new EasyComputer());
+                            startGame(new MediumComputer(true), new EasyComputer(false));
                             break;
 
                         case 33:
