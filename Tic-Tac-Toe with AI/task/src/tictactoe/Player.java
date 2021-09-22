@@ -1,6 +1,12 @@
 package tictactoe;
 
-public interface Player {
+public abstract class Player
+{
+    protected PlayerType playerType;
 
-    public int[] getNextMove(Board board);
+    public Player(PlayerType playerType) {
+        this.playerType = playerType;
+    }
+
+    public abstract int[] getNextMove(Board board);
 }

@@ -2,13 +2,14 @@ package tictactoe;
 
 public class EasyComputer extends Computer{
 
-    protected EasyComputer(boolean playingAsX) {
-        super(playingAsX);
+    protected EasyComputer() {
+        super(true, PlayerType.COMPUTER_EASY);
     }
 
-    public int[] getNextMove(Board board) {
-        System.out.println("Making move level \"easy\"");
-        super.board = board;
-        return super.getNextRandomMove();
+    @Override
+    public int[] getNextPosition(Board board)
+    {
+        return new int[0];
     }
+
 }

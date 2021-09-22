@@ -1,5 +1,8 @@
 package tictactoe;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -22,54 +25,10 @@ public class Game {
             String command = scanner.nextLine();
             String action = getMenuAction(command);
 
-            if (!action.equals("Error!")) {
-                if (action.equals("exit")) {
-                    running = false;
-                } else {
-                    int gameMode = getGameMode(command);
-
-                    switch (gameMode) {
-                        case 11:
-                            startGame(new Human(), new Human());
-                            break;
-
-                        case 12:
-                            startGame(new Human(), new EasyComputer(false));
-                            break;
-
-                        case 13:
-                            startGame(new Human(), new MediumComputer(false));
-
-                        case 21:
-                            startGame(new EasyComputer(true), new Human());
-                            break;
-
-                        case 22:
-                            startGame(new EasyComputer(true), new EasyComputer(false));
-                            break;
-
-                        case 23:
-                            startGame(new EasyComputer(true), new MediumComputer(false));
-                            break;
-
-                        case 31:
-                            startGame(new MediumComputer(true), new Human());
-                            break;
-
-                        case 32:
-                            startGame(new MediumComputer(true), new EasyComputer(false));
-                            break;
-
-                        case 33:
-                            startGame(new MediumComputer(true), new MediumComputer(false));
-                            break;
-
-                        case -1:
-                        default:
-                            System.out.println("Bad parameters!");
-                            break;
-                    }
-                }
+            if (action.equals("exit"))
+                running = false;
+            else if (action.equals("start")) {
+                startGame(getGameMode(command));
             }
         }
     }
@@ -85,52 +44,49 @@ public class Game {
         return "Error!";
     }
 
-    private int getGameMode(String input) {
+    private List<Player> getGameMode(String input) {
         String[] action = input.split(" ");
-        int ret;
 
         if (action.length != 3) {
-            return -1;
+            return Collections.emptyList();
         }
 
-        switch (action[1]) {
-            case "user":
-                ret = 10;
-                break;
+        Player player1 = createFirstPlayerFromInput(action[1]);
+        Player player2 = createSecondPlayerFromInput(action[2]);
 
-            case "easy":
-                ret = 20;
-                break;
-
-            case "medium":
-                ret = 30;
-                break;
-
-            default:
-                return -1;
+        if(player1 == null || player2 == null) {
+            return Collections.emptyList();
         }
 
-        switch (action[2]) {
-            case "user":
-                ret += 1;
-                break;
-
-            case "easy":
-                ret += 2;
-                break;
-
-            case "medium":
-                ret += 3;
-                break;
-
-            default:
-                return -1;
-        }
-
-        return ret;
+        return Arrays.asList(player1, player2);
     }
 
-    private void startGame(Player playerOne, Player playerTwo) {
+    private Player createFirstPlayerFromInput(String input)
+    {
+        return createPlayerFromInput(input, true);
+    }
+
+    private Player createSecondPlayerFromInput(String input)
+    {
+        return createPlayerFromInput(input, false);
+    }
+
+    private Player createPlayerFromInput(String input, boolean playLikeX)
+    {
+        switch(PlayerType.fromValue(input)) {
+            case USER: return new Human();
+            case COMPUTER_EASY: return new EasyComputer();
+            case COMPUTER_MEDIUM: return new MediumComputer(playLikeX);
+            default: return null;
+        }
+    }
+
+    private void startGame(List<Player>players) {
+        if(players.isEmpty()) {
+            System.out.println("Bad parameters!");
+            return;
+        }
+
         board.clear();
         boolean firstPlayerMove = true;
         String winner = "N";
@@ -139,9 +95,9 @@ public class Game {
             System.out.println(board.drawBoard());
 
             if(firstPlayerMove) {
-                board.makeMove(playerOne.getNextMove(board), "X");
+                board.makeMove(players.get(0).getNextMove(board), "X");
             } else {
-                board.makeMove(playerTwo.getNextMove(board), "O");
+                board.makeMove(players.get(1).getNextMove(board), "O");
             }
 
             firstPlayerMove = !firstPlayerMove;

@@ -2,18 +2,24 @@ package tictactoe;
 
 import java.util.Random;
 
-public abstract class Computer implements Player {
-    protected Board board;
+public abstract class Computer extends Player {
     protected boolean playingAsX;
 
-    protected Computer(boolean playingAsX) {
+    protected Computer(boolean playingAsX, PlayerType playerType) {
+        super(playerType);
         this.playingAsX = playingAsX;
     }
 
-    @Override
-    public abstract int[] getNextMove(Board board);
+    public int[] getNextMove(Board board) {
+        System.out.println("Making move level \"" + playerType.toString() + "\"");
+        int[] nextMove = getNextPosition(board);
 
-    protected int[] getNextRandomMove() {
+        return nextMove.length == 0 ? getNextRandomMove(board) : nextMove;
+    }
+
+    public abstract int[] getNextPosition(Board board);
+
+    protected int[] getNextRandomMove(Board board) {
         int[] position = new int[2];
         String[] availablePosition = new String[9];
         Random random = new Random();

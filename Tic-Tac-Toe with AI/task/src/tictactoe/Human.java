@@ -2,7 +2,12 @@ package tictactoe;
 
 import java.util.Scanner;
 
-public class Human implements Player{
+public class Human extends Player{
+
+    public Human()
+    {
+        super(PlayerType.USER);
+    }
 
     public int[] getNextMove(Board board) {
         boolean hasGoodInput = false;
